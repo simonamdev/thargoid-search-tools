@@ -21,8 +21,8 @@ def search():
     if '' in request.form.values():
         print('Incorrect values passed: {}'.format(request.form))
         return redirect('/')
-    radii = [parse_radius(request.form['radius1']), parse_radius(request.form['radius2']), parse_radius(request.form['radius3'])]
-    sites = data_retriever.ping_edsm(system_name=request.form['system'], radii=radii)
+    coordinates = [parse_radius(request.form['x']), parse_radius(request.form['y']), parse_radius(request.form['z'])]
+    sites = data_retriever.get_closest_systems(x=coordinates[0], y=coordinates[1], z=coordinates[2], radius=5)
     print('Results: {}'.format(sites))
     return render_template('results.html', sites=sites)
 
