@@ -7,6 +7,10 @@ app = Flask(__name__)
 data_retriever = DataRetriever()
 
 
+def parse_radius(amount)
+    return round(float(amount), 2)
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -17,7 +21,7 @@ def search():
     if '' in request.form.values():
         print('Incorrect values passed: {}'.format(request.form))
         return redirect('/')
-    radii = [int(request.form['radius1']), int(request.form['radius2']), int(request.form['radius3'])]
+    radii = [parse_radius(request.form['radius1']), parse_radius(request.form['radius2']), parse_radius(request.form['radius3'])]
     sites = data_retriever.ping_edsm(system_name=request.form['system'], radii=radii)
     print('Results: {}'.format(sites))
     return render_template('results.html', sites=sites)
