@@ -15,9 +15,10 @@ class DataRetriever:
 
     def ping_edsm(self, system_name, radii):
         # first check the mem cache
-        if (system_name, radii[0], radii[1], radii[2]) in self._cache.keys():
+        key = (system_name, radii[0], radii[1], radii[2])
+        if key in self._cache.keys():
             print('Retrieved data for: {} from cache'.format(system_name))
-            return self._cache[system_name]
+            return self._cache[key]
         responses = self.get_data(system_name=system_name, radii=radii)
         possible_sites = self.format_data(responses=responses, system_name=system_name)
         self.store_in_cache(system_name=system_name, radii=radii, results=possible_sites)
