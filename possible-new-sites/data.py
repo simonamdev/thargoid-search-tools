@@ -15,12 +15,12 @@ class DataRetriever:
 
     def ping_edsm(self, system_name, radii):
         # first check the mem cache
-        if system_name in self._cache.keys():
+        if tuple([system_name].extend(radii)) in self._cache.keys():
             print('Retrieved data for: {} from cache'.format(system_name))
             return self._cache[system_name]
         responses = self.get_data(system_name=system_name, radii=radii)
         possible_sites = self.format_data(responses=responses, system_name=system_name)
-        self.store_in_cache(system_name=system_name, results=possible_sites)
+        self.store_in_cache(system_name=system_name, radii=radii, results=possible_sites)
         return possible_sites
 
     def get_data(self, system_name, radii):
@@ -45,9 +45,11 @@ class DataRetriever:
                 possible_sites.add(site_data['name'])
         return possible_sites
 
-    def store_in_cache(self, system_name, results):
-        self._cache[system_name] = results
+    def store_in_cache(self, system_name, radii, results):
+        key = tuple([system_name].extend(radii))
+        self._cache[key] = results
         size = round(sys.getsizeof(self._cache) / 1024, 2)
+        print('Added results: {} to key: {}'.format(results, key))
         print('Cache has grown to: {}kB'.format(size))
 
 
