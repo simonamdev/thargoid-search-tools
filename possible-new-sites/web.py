@@ -14,8 +14,11 @@ def index():
 
 @app.route('/search', methods=['POST'])
 def search():
-    print(request.form)
-    sites = data_retriever.ping_edsm(system_name='HIP 15443', radii=[5.3, 2.5, 0.1])
+    if '' in request.form.values():
+        print('Incorrect values passed: {}'.format(request.form))
+        return redirect('/')
+    radii = [int(request.form['radius1']), int(request.form['radius2']), int(request.form['radius3'])]
+    sites = data_retriever.ping_edsm(system_name=request.form['system'], radii=radii)
     print('Results: {}'.format(sites))
     return render_template('results.html', sites=sites)
 
