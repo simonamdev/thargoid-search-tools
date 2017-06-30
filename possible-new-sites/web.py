@@ -7,7 +7,7 @@ app = Flask(__name__)
 data_retriever = DataRetriever()
 
 
-def parse_radius(amount)
+def parse_radius(amount):
     return round(float(amount), 2)
 
 
