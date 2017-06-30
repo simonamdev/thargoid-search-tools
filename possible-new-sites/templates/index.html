@@ -5,6 +5,18 @@
         <title>Thargoid Search Tools</title>
     </head>
     <body>
-
+        <h1>Thargoid Search Tools</h1>
+        <h2>Systems Within Radius Discovery Tool</h2>
+        <form method="post" enctype="multipart/form-data" action="/search">
+            <label>System Name</label>
+            <input type="text" name="system">
+            <label>Distance</label>
+            <input type="number" step="0.01" name="radius1">
+            <label>Distance</label>
+            <input type="number" step="0.01" name="radius2">
+            <label>Distance</label>
+            <input type="number" step="0.01" name="radius3">
+            <input type="submit" value="Submit">
+        </form>
     </body>
 </html>

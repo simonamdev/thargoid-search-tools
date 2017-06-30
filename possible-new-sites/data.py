@@ -1,5 +1,5 @@
 import json
-
+import sys
 import requests
 
 
@@ -26,9 +26,10 @@ class DataRetriever:
     def get_data(self, system_name, radii):
         url = 'https://www.edsm.net/api-v1/sphere-systems'
         params = self.generate_params(system_name, radii=radii)
+        print('Pinging EDSM with following params: {}, {}'.format(system_name, radii))
         responses = []
         for param in params:
-            print('Pinging EDSM on parameters: {}'.format(param))
+            # print('Pinging EDSM on parameters: {}'.format(param))
             responses.append(requests.get(url=url, params=param))
         return responses
 
@@ -46,6 +47,8 @@ class DataRetriever:
 
     def store_in_cache(self, system_name, results):
         self._cache[system_name] = results
+        size = round(sys.getsizeof(self._cache) / 1024, 2)
+        print('Cache has grown to: {}kB'.format(size))
 
 
 if __name__ == '__main__':
