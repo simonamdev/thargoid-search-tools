@@ -29,6 +29,7 @@ class DataRetriever:
             print('Using distances: {}'.format(distance_list))
             try:
                 answer = trilaterate.trilaterate(center_merope, center_col70, center_origin, distance_list[0], distance_list[1], distance_list[2])
+                possible_coordinates.append(answer[0])
                 possible_coordinates.append(answer[1])
             except Exception as e:
                 print(e)
