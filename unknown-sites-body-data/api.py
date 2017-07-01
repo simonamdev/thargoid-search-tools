@@ -25,7 +25,7 @@ def get_site_data(system_name, body_name):
     return site_data
 
 
-@app.route('/v1/unknown-site')
+@app.route('/v1/unknown-sites')
 def unknown_site_data():
     system_name = request.args.get('system')
     body_name = request.args.get('body')
