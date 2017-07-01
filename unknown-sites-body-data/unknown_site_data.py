@@ -7,7 +7,7 @@ import time
 start_time = time.time()
 
 required_systems = []
-with open('us_bodies.txt', 'r') as us_bodies:
+with open('us_bodies.txt', 'r', encoding="latin-1") as us_bodies:
     for line in us_bodies:
         required_systems.append(line.strip().lower())
 # print(required_systems)
@@ -20,7 +20,7 @@ systems_file_path = os.path.join(os.path.dirname(__file__), 'systems.csv')
 
 
 def get_system_line():
-    with open(systems_file_path, 'r') as big_file:
+    with open(systems_file_path, 'r', encoding="latin-1") as big_file:
         reader = csv.reader(big_file)
         for row in reader:
             yield row
@@ -55,7 +55,7 @@ missing_systems = [
 
 print('Retrieving required planets')
 required_planets = []
-with open('planets.txt', 'r') as us_planets:
+with open('planets.txt', 'r', encoding="latin-1") as us_planets:
     for line in us_planets:
         required_planets.append(line.strip().lower())
 
@@ -67,7 +67,7 @@ bodies_file_path = os.path.join(os.path.dirname(__file__), 'bodies.jsonl')
 
 
 def get_body_line():
-    with open(bodies_file_path, 'r') as big_file:
+    with open(bodies_file_path, 'r', encoding="latin-1") as big_file:
         for row in big_file:
             yield json.loads(row)
 
@@ -87,7 +87,7 @@ for line in get_body_line():
     if len(planet_data) == system_count_required:
         break
 
-print(planet_data)
+# print(planet_data)
 print('{}/{} Planets retrieved'.format(len(planet_data), system_count_required))
 
 # filter out the unneeded data
