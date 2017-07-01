@@ -1,6 +1,9 @@
+import argparse
+
 from flask import Flask, render_template, redirect, jsonify
 from data import DataRetriever
 from flask import request
+from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__)
 
@@ -43,4 +46,16 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=3000, debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--debug',
+        dest='debug',
+        action='store_true',
+        default=False,
+        help='Run in debug mode')
+    args = parser.parse_args()
+    if args.debug:
+        app.run(host='127.0.0.1', port=3000, debug=True, threaded=True)
+    else:
+        http_server = WSGIServer(('127.0.0.1', 3000), app)
+        http_server.serve_forever()
