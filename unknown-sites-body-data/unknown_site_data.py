@@ -51,7 +51,7 @@ missing_systems = [
     ]
 ]
 
-print('Missing systems: {}'.format(missing_systems))
+# print('Missing systems: {}'.format(missing_systems))
 
 print('Retrieving required planets')
 required_planets = []
