@@ -1,7 +1,7 @@
 import argparse
 
 from flask import Flask, jsonify, request
-from flask import json
+from flask import json, abort
 from gevent.pywsgi import WSGIServer
 from flask_cors import CORS
 
@@ -24,7 +24,7 @@ def get_site_data(system_name, body_name):
     for site in site_data:
         if system_name.lower() == site['system'].lower() and body_name.lower() == site['body'].lower():
             return site
-    return site_data
+    return None
 
 
 def get_available_sites():
@@ -42,6 +42,8 @@ def unknown_site_data():
     body_name = request.args.get('body')
     print('Params: {} {}'.format(system_name, body_name))
     return_site_data = get_site_data(system_name=system_name, body_name=body_name)
+    if return_site_data is None:
+        return abort(503)
     return jsonify(
         {
             'data': return_site_data
