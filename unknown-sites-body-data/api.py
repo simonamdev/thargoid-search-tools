@@ -5,21 +5,34 @@ from flask import json
 from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__)
-data = {}
+site_data = {}
 data_file_path = 'us_data.json'
 
 
 def load_data():
     with open(data_file_path, 'r') as data_file:
-        global data
-        data = json.loads(data_file.read())
+        global site_data
+        site_data = json.loads(data_file.read())
+
+
+def get_site_data(system_name, body_name):
+    global site_data
+    if system_name is None and body_name is None:
+        return site_data
+    for site in site_data:
+        if system_name.lower() == site['system'].lower() and body_name.lower() == site['body'].lower():
+            return site
+    return site_data
 
 
 @app.route('/api/v1/unknown-site')
 def unknown_site_data():
+    system_name = request.args.get('system')
+    body_name = request.args.get('body')
+    return_site_data = get_site_data(system_name=system_name, body_name=body_name)
     return jsonify(
         {
-            'data': data
+            'data': return_site_data
         }
     )
 
