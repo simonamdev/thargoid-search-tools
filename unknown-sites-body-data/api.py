@@ -25,6 +25,16 @@ def get_site_data(system_name, body_name):
     return site_data
 
 
+def get_available_sites():
+    available_sites = {}
+    for site in site_data:
+        print(site)
+        if site['system'] not in available_sites.keys():
+            available_sites[site['system']] = []
+        available_sites[site['system']].append(site['body'])
+    return available_sites
+
+
 @app.route('/v1/unknown-sites')
 def unknown_site_data():
     system_name = request.args.get('system')
@@ -34,6 +44,13 @@ def unknown_site_data():
         {
             'data': return_site_data
         }
+    )
+
+
+@app.route('/v1/unknown-sites/available')
+def available_sites_data():
+    return jsonify(
+        get_available_sites()
     )
 
 
