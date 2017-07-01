@@ -10,7 +10,7 @@ required_systems = []
 with open('us_bodies.txt', 'r') as us_bodies:
     for line in us_bodies:
         required_systems.append(line.strip().lower())
-print(required_systems)
+# print(required_systems)
 
 system_count_required = len(required_systems)
 
@@ -110,7 +110,7 @@ for planet in planet_data:
     adapted_planet_data.append(new_planet)
 
 print('Adapted planet data:')
-print(adapted_planet_data)
+# print(adapted_planet_data)
 
 print('Dumping data to file')
 with open('us_data.json', 'w') as output_file:
