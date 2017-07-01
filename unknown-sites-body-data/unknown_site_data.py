@@ -20,7 +20,7 @@ systems_file_path = os.path.join(os.path.dirname(__file__), 'systems.csv')
 
 
 def get_system_line():
-    with open(systems_file_path, 'r', encoding="latin-1") as big_file:
+    with open(systems_file_path, 'r', encoding='utf-8') as big_file:
         reader = csv.reader(big_file)
         for row in reader:
             yield row
