@@ -3,8 +3,8 @@ import os
 import pytesseract
 from PIL import Image
 
-map_image_path = os.path.join(os.path.dirname(__file__), 'map.png')
-temp_image_path = os.path.join(os.path.dirname(__file__), 'temp.jpg')
+map_image_path = os.path.join(os.path.dirname(__file__), 'files/map.png')
+temp_image_path = os.path.join(os.path.dirname(__file__), 'files/temp.jpg')
 
 img = Image.open(map_image_path)
 width, height = img.size
