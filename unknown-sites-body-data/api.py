@@ -30,7 +30,6 @@ def get_site_data(system_name, body_name):
 def get_available_sites():
     available_sites = {}
     for site in site_data:
-        print(site)
         if site['system'] not in available_sites.keys():
             available_sites[site['system']] = []
         available_sites[site['system']].append(site['body'])
