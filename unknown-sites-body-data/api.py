@@ -3,8 +3,10 @@ import argparse
 from flask import Flask, jsonify, request
 from flask import json
 from gevent.pywsgi import WSGIServer
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 site_data = {}
 data_file_path = 'us_data.json'
 
