@@ -112,6 +112,10 @@ for planet in planet_data:
 print('Adapted planet data:')
 print(adapted_planet_data)
 
+print('Dumping data to file')
+with open('us_data.json', 'w') as output_file:
+    output_file.write(json.dumps(adapted_planet_data))
+
 end_time = time.time()
 time = round((end_time - start_time) / 60, 2)
 print('Time taken: {} minutes'.format(time))
