@@ -4,6 +4,7 @@ import json
 import os
 import time
 
+
 start_time = time.time()
 
 required_systems = []
@@ -18,23 +19,25 @@ system_count_required = len(required_systems)
 
 systems_file_path = os.path.join(os.path.dirname(__file__), 'systems.csv')
 
+header_passed = False
+
 
 def get_system_line():
-    with open(systems_file_path, 'r', encoding='utf-8') as big_file:
+    # skip the first line, which is the header
+    with open(systems_file_path, newline='', encoding='utf-8') as big_file:
         reader = csv.reader(big_file)
         for row in reader:
+            global header_passed
+            if not header_passed:
+                header_passed = True
+                continue
             yield row
 
 # Get their respective IDs
 system_ids = {}
 
 print('Retrieving System data')
-header_passed = False
 for system in get_system_line():
-    # skip the first line, which is the header
-    if not header_passed:
-        header_passed = True
-        continue
     if system[2].lower() in required_systems:
         # print('{} found'.format(system[2]))
         system_ids[system[2]] = int(system[0])
