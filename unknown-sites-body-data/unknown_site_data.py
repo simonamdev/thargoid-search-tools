@@ -26,7 +26,6 @@ def get_system_line():
             yield row
 
 # Get their respective IDs
-
 system_ids = {}
 
 print('Retrieving System data')
@@ -92,8 +91,9 @@ print(planet_data)
 print('{}/{} Planets retrieved'.format(len(planet_data), system_count_required))
 
 # filter out the unneeded data
-required_keys = ['system', 'body', 'gravity', 'radius', 'rotational_period', 'surface_temperature', 'earth_masses', 'is_rotational_period_tidally_locked', 'distance_to_arrival ']
+required_keys = ['system', 'body', 'gravity', 'radius', 'rotational_period', 'surface_temperature', 'earth_masses', 'is_rotational_period_tidally_locked', 'distance_to_arrival']
 
+print('Adapting planet data')
 adapted_planet_data = []
 
 for planet in planet_data:
@@ -103,12 +103,11 @@ for planet in planet_data:
         if key in required_keys:
             new_planet[key] = value
         # add the new system/body key
-        for system_name, id in system_ids.items():
-            if id == value['system_id']:
-                # because this totally isn't hacky
-                new_planet['system'] = system_name
-                new_planet['planet'] = value['name'].replace(system_name, '')
-        adapted_planet_data.append(new_planet)
+    for system_name, system_id in system_ids.items():
+        if planet['system_id'] == system_id:
+            new_planet['system'] = system_name
+            new_planet['body'] = planet['name'].replace('{} '.format(system_name), '')
+    adapted_planet_data.append(new_planet)
 
 print('Adapted planet data:')
 print(adapted_planet_data)
