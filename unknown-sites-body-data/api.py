@@ -15,6 +15,7 @@ def load_data():
     with open(data_file_path, 'r') as data_file:
         global site_data
         site_data = json.loads(data_file.read())
+    print('Loaded data for {} sites'.format(len(site_data)))
 
 
 def get_site_data(system_name, body_name):
