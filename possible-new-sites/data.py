@@ -1,11 +1,42 @@
 import json
 import sys
 import requests
+import numpy
+
+import trilaterate
+
+# Merope
+center_merope = numpy.array([-78.59375, -149.625, -340.53125])
+# Col 70 Sector FY-N C21-3
+center_col70 = numpy.array([687.0625, -362.53125, -697.0625])
 
 
 class DataRetriever:
     def __init__(self):
         self._cache = {}
+
+    def get_possible_systems(self, coordinates, distances):
+        center_origin = numpy.array(coordinates)
+        possible_distances = (
+            [distances[0], distances[1], distances[2]],
+            [distances[0], distances[2], distances[1]],
+            [distances[1], distances[0], distances[2]],
+            [distances[1], distances[2], distances[0]],
+            [distances[2], distances[1], distances[0]]
+        )
+        possible_coordinates = []
+        for distance_list in possible_distances:
+            print('Using distances: {}'.format(distance_list))
+            try:
+                answer = trilaterate.trilaterate(center_merope, center_col70, center_origin, distance_list[0], distance_list[1], distance_list[2])
+                possible_coordinates.append(answer[1])
+            except Exception as e:
+                print(e)
+        possible_systems = []
+        for coordinates in possible_coordinates:
+            systems = self.get_closest_systems(coordinates[0], coordinates[1], coordinates[2], 5)
+            possible_systems.extend(systems)
+        return possible_systems
 
     def get_closest_systems(self, x, y, z, radius=10):
         # first check the mem cache
