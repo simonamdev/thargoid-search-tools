@@ -1,10 +1,19 @@
-# Get the required system names
 import csv
 import json
 import os
 import time
-
 import requests
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--debug',
+    dest='debug',
+    action='store_true',
+    default=False,
+    help='Run in debug mode')
+args = parser.parse_args()
+
 
 start_time = time.time()
 
