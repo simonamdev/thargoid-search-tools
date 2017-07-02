@@ -17,7 +17,9 @@ args = parser.parse_args()
 # TODO: Add to argument parsing
 bodies_required_path = 'us_bodies.txt'
 planets_required_file_path = 'planets.txt'
-data_directory = 'G:\Workspace\\thargoid-search\\'
+data_directory = '/home/data/'
+if args.debug:
+    data_directory = 'G:\Workspace\\thargoid-search\\'
 systems_file_path = os.path.join(data_directory, 'systems.csv')
 bodies_data_path = os.path.join(data_directory, 'bodies.jsonl')
 output_file_path = os.path.join(data_directory, 'us_data.json')
