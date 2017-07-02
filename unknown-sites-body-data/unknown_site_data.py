@@ -172,6 +172,7 @@ for body in missing_body_data:
         }
     )
 print('Adapted missing body data: {}'.format(adapted_missing_body_data))
+print('{}/{} missing bodies retrieved'.format(len(adapted_missing_body_data), len(missing_planet_names)))
 
 # merge the lists
 adapted_planet_data.extend(adapted_missing_body_data)
