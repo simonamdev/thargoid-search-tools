@@ -127,6 +127,7 @@ print('Retrieving missing planet data from EDSM')
 for planet in planets_missing_data:
     url = 'https://www.edsm.net/api-system-v1/bodies'  # ?systemName=Sol
     system_name = planet['full_name'].replace(' {}'.format(planet['body']), '')
+    print('Making request for: {}'.format(system_name))
     response = requests.get(url=url, params=[('systemName', system_name)])
     edsm_data = json.loads(response.text)
     print('{} Bodies present in {}'.format(len(edsm_data['bodies']), edsm_data['name']))
