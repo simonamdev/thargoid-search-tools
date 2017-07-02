@@ -153,8 +153,8 @@ for planet in planets_missing_data:
             }
             planet['data'] = adapted_data
 
-print('Final planet data count: {} / {}'.format(len(data), len(required_planets)))
 print(data)
+print('Final planet data count: {} / {}'.format(len(data), len(required_planets)))
 
 print('Writing data to file')
 with open(output_file_path, 'w') as output_file:
