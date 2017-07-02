@@ -18,8 +18,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 # TODO: Add to argument parsing
-bodies_required_path = 'us_bodies.txt'
-planets_required_file_path = 'planets.txt'
+bodies_required_path = 'bodies_required.txt'
+planets_required_file_path = 'planets_required.txt'
 data_directory = '/home/data/'
 if args.debug:
     data_directory = 'G:\Workspace\\thargoid-search\\'
