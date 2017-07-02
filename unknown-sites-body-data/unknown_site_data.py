@@ -17,8 +17,7 @@ parser.add_argument(
     help='Run in debug mode')
 args = parser.parse_args()
 
-# TODO: Add to argument parsing
-bodies_required_path = 'bodies_required.txt'
+systems_required_path = 'systems_required.txt'
 planets_required_file_path = 'planets_required.txt'
 data_directory = '/home/data/'
 if args.debug:
@@ -32,7 +31,7 @@ print('Using {} as data directory'.format(data_directory))
 required_bodies = []
 required_systems = []
 print('Retrieving required systems')
-with open(bodies_required_path, 'r', encoding='latin-1') as us_bodies:
+with open(systems_required_path, 'r', encoding='latin-1') as us_bodies:
     for line in us_bodies:
         required_systems.append(line.strip())
 
