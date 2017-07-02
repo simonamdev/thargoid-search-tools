@@ -19,7 +19,8 @@ bodies_required_path = 'us_bodies.txt'
 planets_required_file_path = 'planets.txt'
 # systems_file_path = os.path.join(os.path.dirname(__file__), 'systems.csv')
 systems_file_path = 'G:\Workspace\\thargoid-search\systems.csv'
-bodies_data_path = 'G:\Workspace\\thargoid-search\bodies.jsonl'
+bodies_data_path = 'G:\Workspace\\thargoid-search\\bodies.jsonl'
+output_file_path = 'G:\Workspace\\thargoid-search\\us_data.json'
 
 start_time = time.time()
 
@@ -46,7 +47,12 @@ for system, planet in zip(required_systems, required_planets):
         data[system.upper()] = {
             'planets': []
         }
-    data[system.upper()]['planets'].append(planet)
+    data[system.upper()]['planets'].append(
+        {
+            'body': planet,
+            'full_name': '{} {}'.format(system.upper(), planet.upper())
+        }
+    )
 
 # Get the system ID for the required systems and include it in the dict
 header_passed = False
@@ -68,12 +74,13 @@ lower_case_system_names = [sys.lower() for sys in required_systems]
 for system in get_system_line():
     if system[2].lower() in lower_case_system_names:
         data[system[2].upper()]['id'] = int(system[0])
-        continue
 
+print('Determining missing systems')
 missing_system_names = []
 for system_name, system_data in data.items():
     if 'id' not in system_data.keys():
         missing_system_names.append(system_name)
+
 
 print('Missing systems: Count: {} Names: {}'.format(len(missing_system_names), missing_system_names))
 
@@ -82,108 +89,70 @@ def get_body_line():
     with open(bodies_data_path, 'r', encoding='latin-1') as big_file:
         for row in big_file:
             yield json.loads(row)
-#
-# planet_data = []
-#
-# print('Retrieving planet data')
-# for line in get_body_line():
-#     # Skip if not a planet
-#     if not line['group_name'] == 'Planet':
-#         continue
-#     # Skip if the system ID is not in our required system IDs
-#     # if not line['system_id'] in system_ids.values():
-#     #     continue
-#     # If the planet name matches, return it
-#     if line['name'].lower() in required_planet_names:
-#         planet_data.append(line)
-#     if len(planet_data) == system_count_required:
-#         break
-#
-# # print(planet_data)
-# print('{}/{} Planets retrieved'.format(len(planet_data), system_count_required))
-#
-# found_planet_names = [
-#     data['name'].lower() for data in planet_data
-# ]
-# missing_planet_names = [
-#     planet['body'] for planet in required_planets if planet['body'] not in found_planet_names
-# ]
-# print('Missing planets: {}'.format(missing_planet_names))
-#
-# # filter out the unneeded data
-# required_keys = ['system', 'body', 'gravity', 'radius', 'rotational_period', 'surface_temperature', 'earth_masses', 'is_rotational_period_tidally_locked', 'distance_to_arrival']
-#
-# print('Adapting planet data')
-# adapted_planet_data = []
-#
-# for planet in planet_data:
-#     new_planet = {}
-#     for key, value in planet.items():
-#         # filter the required keys only
-#         if key in required_keys:
-#             new_planet[key] = value
-#         # add the new system/body key
-#     for system_name, system_id in system_ids.items():
-#         if planet['system_id'] == system_id:
-#             new_planet['system'] = system_name
-#             new_planet['body'] = planet['name'].replace('{} '.format(system_name), '')
-#     adapted_planet_data.append(new_planet)
-#
-#
-# # For each missing planet, get the data from EDSM instead
-# missing_planets = [planet for planet in required_planets if planet['body'].lower() in missing_planet_names]
-# print('Missing planets: {}'.format(len(missing_planets)))
-# assert not len(missing_planets) == len(adapted_planet_data)
-#
-# missing_body_data = []
-# print('Retrieving following planets from EDSM: {}'.format(missing_planets))
-# for planet in missing_planets:
-#     url = 'https://www.edsm.net/api-system-v1/bodies'
-#     # url = 'https://www.edsm.net/api-system-v1/bodies?systemName=Sol'
-#     response = requests.get(url=url, params=[('systemName', planet['system'])])
-#     data = json.loads(response.text)
-#     print('{} Bodies present in {}'.format(len(data['bodies']), data['name']))
-#     for body in data['bodies']:
-#         full_planet_name = '{} {}'.format(planet['system'], planet['body'])
-#         if body['name'].lower() == full_planet_name.lower():
-#             print('{} found'.format(full_planet_name))
-#             missing_body_data.append(body)
-#
-# print('Adapting missing planet data')
-# # we need to convert the EDSM keys to match the other key data
-# adapted_missing_body_data = []
-#
-# for body in missing_body_data:
-#     # SUPER HACKY SPLIT UP OF SYSTEM AND BODY, SORRY :(
-#     system_name = ''
-#     body_name = ''
-#     for missing_planet in missing_planets:
-#         combined_name = '{} {}'.format(missing_planet['system'], missing_planet['body'])
-#         if combined_name.lower() == body['name'].lower():
-#             system_name = body['name'].replace(missing_planet['body'], '')
-#             body_name = body['name'].replace(missing_planet['system'], '')
-#             break
-#     adapted_missing_body_data.append(
-#         {
-#             'system': system_name,
-#             'body': body_name,
-#             'gravity': body['gravity'],
-#             'radius': body['radius'],
-#             'rotational_period': body['rotationalPeriod'],
-#             'surface_temperature': body['surfaceTemperature'],
-#             'earth_masses': body['earthMasses'],
-#             'is_rotational_period_tidally_locked': body['rotationalPeriodTidallyLocked'],
-#             'distance_to_arrival': body['distanceToArrival']
-#         }
-#     )
-# print('Adapted missing body data: {}'.format(adapted_missing_body_data))
-#
-# # merge the lists
-# adapted_planet_data.extend(adapted_missing_body_data)
-#
-# print('Dumping data to file')
-# with open('us_data.json', 'w') as output_file:
-#     output_file.write(json.dumps(adapted_planet_data))
+
+required_planet_keys = ['system', 'body', 'gravity', 'radius', 'rotational_period', 'surface_temperature', 'earth_masses', 'is_rotational_period_tidally_locked', 'distance_to_arrival']
+
+print('Retrieving planet data')
+for line in get_body_line():
+    # Skip if not a planet
+    if not line['group_name'] == 'Planet':
+        continue
+    # for each of our bodies, check if the planet name matches
+    for system_name, system_data in data.items():
+        for planet in system_data['planets']:
+            if planet['full_name'].lower() == line['name'].lower():
+                # if the name matches, just dump all the body data into the large data structure
+                # filter out the keys that aren't relevant
+                adapted_data = {}
+                for key, value in line.items():
+                    if key in required_planet_keys:
+                        adapted_data[key] = value
+                planet['data'] = adapted_data
+                break
+
+planets_missing_data = []
+print('Determining planets with missing data')
+for system_name, system_data in data.items():
+    for planet in system_data['planets']:
+        if 'data' not in planet.keys():
+            print('Planet without data: {}'.format(planet['full_name']))
+            planets_missing_data.append(planet)
+
+print('Planets missing data: {}'.format(len(planets_missing_data)))
+print(planets_missing_data)
+
+
+# For each missing planet, get the data from EDSM instead
+print('Retrieving missing planet data from EDSM')
+for planet in planets_missing_data:
+    url = 'https://www.edsm.net/api-system-v1/bodies'  # ?systemName=Sol
+    system_name = planet['full_name'].replace(' {}'.format(planet['body']), '')
+    response = requests.get(url=url, params=[('systemName', system_name)])
+    edsm_data = json.loads(response.text)
+    print('{} Bodies present in {}'.format(len(edsm_data['bodies']), edsm_data['name']))
+    for body in edsm_data['bodies']:
+        if body['name'].lower() == planet['full_name'].lower():
+            print('{} found'.format(planet['full_name']))
+            # adapt the data from EDSM
+            adapted_data = {
+                'system': system_name,
+                'body': planet['body'],
+                'gravity': body['gravity'],
+                'radius': body['radius'],
+                'rotational_period': body['rotationalPeriod'],
+                'surface_temperature': body['surfaceTemperature'],
+                'earth_masses': body['earthMasses'],
+                'is_rotational_period_tidally_locked': body['rotationalPeriodTidallyLocked'],
+                'distance_to_arrival': body['distanceToArrival']
+            }
+            planet['data'] = adapted_data
+
+print('Final planet data count: {} / {}'.format(len(data), len(required_planets)))
+print(data)
+
+print('Writing data to file')
+with open(output_file_path, 'w') as output_file:
+    output_file.write(json.dumps(data))
 
 end_time = time.time()
 time = round((end_time - start_time) / 60, 2)
