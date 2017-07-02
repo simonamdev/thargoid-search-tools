@@ -17,7 +17,9 @@ args = parser.parse_args()
 # TODO: Add to argument parsing
 bodies_required_path = 'us_bodies.txt'
 planets_required_file_path = 'planets.txt'
-systems_file_path = os.path.join(os.path.dirname(__file__), 'systems.csv')
+# systems_file_path = os.path.join(os.path.dirname(__file__), 'systems.csv')
+systems_file_path = 'G:\Workspace\\thargoid-search\systems.csv'
+bodies_data_path = 'G:\Workspace\\thargoid-search\bodies.jsonl'
 
 start_time = time.time()
 
@@ -41,70 +43,45 @@ data = {}
 
 for system, planet in zip(required_systems, required_planets):
     if system not in data.keys():
-        data[system] = []
-    data[system].append(planet)
+        data[system.upper()] = {
+            'planets': []
+        }
+    data[system.upper()]['planets'].append(planet)
 
-print(data)
+# Get the system ID for the required systems and include it in the dict
+header_passed = False
 
-#
-#
-# # Get the system data for the required systems
-# header_passed = False
-#
-#
-# def get_system_line():
-#     # skip the first line, which is the header
-#     with open(systems_file_path, newline='', encoding='utf-8') as big_file:
-#         reader = csv.reader(big_file)
-#         for row in reader:
-#             global header_passed
-#             if not header_passed:
-#                 header_passed = True
-#                 continue
-#             yield row
-#
-# # Get their respective IDs
-# system_ids = {}
-#
-# print('Retrieving System data')
-# for system in get_system_line():
-#     if system[2].lower() in required_systems:
-#         # print('{} found'.format(system[2]))
-#         system_ids[system[2]] = int(system[0])
-#         continue
-#     if len(list(system_ids.keys())) == system_count_required:
-#         break
-#
-# # print(system_ids)
-# print('{}/{} IDs found'.format(len(list(system_ids.keys())), system_count_required))
-#
-# missing_systems = [
-#     system for system in required_systems if system not in [
-#         found_system.lower() for found_system in system_ids.keys()
-#     ]
-# ]
-#
-# print('Missing systems: {}'.format(missing_systems))
-#
-#
-#
-# # append the planets to the system names. Order is preserved
-# required_planets = [
-#     {
-#         'system': data[0],
-#         'body': data[1]
-#     } for data in zip(required_systems, required_planets)
-# ]
-# required_planet_names = ['{} {}'.format(planet['system'], planet['body']) for planet in required_planets]
-#
-#
-# bodies_file_path = os.path.join(os.path.dirname(__file__), 'bodies.jsonl')
-#
-#
-# def get_body_line():
-#     with open(bodies_file_path, 'r', encoding="latin-1") as big_file:
-#         for row in big_file:
-#             yield json.loads(row)
+
+def get_system_line():
+    # skip the first line, which is the header
+    with open(systems_file_path, newline='', encoding='utf-8') as big_file:
+        reader = csv.reader(big_file)
+        for row in reader:
+            global header_passed
+            if not header_passed:
+                header_passed = True
+                continue
+            yield row
+
+print('Retrieving System IDs')
+lower_case_system_names = [sys.lower() for sys in required_systems]
+for system in get_system_line():
+    if system[2].lower() in lower_case_system_names:
+        data[system[2].upper()]['id'] = int(system[0])
+        continue
+
+missing_system_names = []
+for system_name, system_data in data.items():
+    if 'id' not in system_data.keys():
+        missing_system_names.append(system_name)
+
+print('Missing systems: Count: {} Names: {}'.format(len(missing_system_names), missing_system_names))
+
+
+def get_body_line():
+    with open(bodies_data_path, 'r', encoding='latin-1') as big_file:
+        for row in big_file:
+            yield json.loads(row)
 #
 # planet_data = []
 #
