@@ -4,6 +4,7 @@ import json
 import os
 import time
 
+import requests
 
 start_time = time.time()
 
@@ -45,7 +46,7 @@ for system in get_system_line():
     if len(list(system_ids.keys())) == system_count_required:
         break
 
-print(system_ids)
+# print(system_ids)
 print('{}/{} IDs found'.format(len(list(system_ids.keys())), system_count_required))
 
 missing_systems = [
@@ -54,7 +55,7 @@ missing_systems = [
     ]
 ]
 
-# print('Missing systems: {}'.format(missing_systems))
+print('Missing systems: {}'.format(missing_systems))
 
 print('Retrieving required planets')
 required_planets = []
@@ -63,7 +64,13 @@ with open('planets.txt', 'r', encoding="latin-1") as us_planets:
         required_planets.append(line.strip().lower())
 
 # append the planets to the system names. Order is preserved
-required_planets = ['{} {}'.format(data[0], data[1]) for data in zip(required_systems, required_planets)]
+required_planets = [
+    {
+        'system': data[0],
+        'body': data[1]
+    } for data in zip(required_systems, required_planets)
+]
+required_planet_names = ['{} {}'.format(planet['system'], planet['body']) for planet in required_planets]
 
 
 bodies_file_path = os.path.join(os.path.dirname(__file__), 'bodies.jsonl')
@@ -85,13 +92,21 @@ for line in get_body_line():
     # if not line['system_id'] in system_ids.values():
     #     continue
     # If the planet name matches, return it
-    if line['name'].lower() in required_planets:
+    if line['name'].lower() in required_planet_names:
         planet_data.append(line)
     if len(planet_data) == system_count_required:
         break
 
 # print(planet_data)
 print('{}/{} Planets retrieved'.format(len(planet_data), system_count_required))
+
+found_planet_names = [
+    data['name'].lower() for data in planet_data
+]
+missing_planet_names = [
+    planet['body'] for planet in required_planets if planet['body'] not in found_planet_names
+]
+print('Missing planets: {}'.format(missing_planet_names))
 
 # filter out the unneeded data
 required_keys = ['system', 'body', 'gravity', 'radius', 'rotational_period', 'surface_temperature', 'earth_masses', 'is_rotational_period_tidally_locked', 'distance_to_arrival']
@@ -112,8 +127,54 @@ for planet in planet_data:
             new_planet['body'] = planet['name'].replace('{} '.format(system_name), '')
     adapted_planet_data.append(new_planet)
 
-print('Adapted planet data:')
-# print(adapted_planet_data)
+
+# For each missing planet, get the data from EDSM instead
+missing_planets = [planet for planet in required_planets if planet['body'].lower() in missing_planet_names]
+missing_body_data = []
+print('Retrieving following planets from EDSM: {}'.format(missing_planets))
+for planet in missing_planets:
+    url = 'https://www.edsm.net/api-system-v1/bodies'
+    # url = 'https://www.edsm.net/api-system-v1/bodies?systemName=Sol'
+    response = requests.get(url=url, params=[('systemName', planet['system'])])
+    data = json.loads(response.text)
+    print('{} Bodies present in {}'.format(len(data['bodies']), data['name']))
+    for body in data['bodies']:
+        full_planet_name = '{} {}'.format(planet['system'], planet['body'])
+        if body['name'].lower() == full_planet_name.lower():
+            print('{} found'.format(full_planet_name))
+            missing_body_data.append(body)
+
+print('Adapting missing planet data')
+# we need to convert the EDSM keys to match the other key data
+adapted_missing_body_data = []
+
+for body in missing_body_data:
+    # SUPER HACKY SPLIT UP OF SYSTEM AND BODY, SORRY :(
+    system_name = ''
+    body_name = ''
+    for missing_planet in missing_planets:
+        combined_name = '{} {}'.format(missing_planet['system'], missing_planet['body'])
+        if combined_name.lower() == body['name'].lower():
+            system_name = body['name'].replace(missing_planet['body'], '')
+            body_name = body['name'].replace(missing_planet['system'], '')
+            break
+    adapted_missing_body_data.append(
+        {
+            'system': system_name,
+            'body': body_name,
+            'gravity': body['gravity'],
+            'radius': body['radius'],
+            'rotational_period': body['rotationalPeriod'],
+            'surface_temperature': body['surfaceTemperature'],
+            'earth_masses': body['earthMasses'],
+            'is_rotational_period_tidally_locked': body['rotationalPeriodTidallyLocked'],
+            'distance_to_arrival': body['distanceToArrival']
+        }
+    )
+print('Adapted missing body data: {}'.format(adapted_missing_body_data))
+
+# merge the lists
+adapted_planet_data.extend(adapted_missing_body_data)
 
 print('Dumping data to file')
 with open('us_data.json', 'w') as output_file:
