@@ -5,6 +5,9 @@ import time
 import requests
 import argparse
 
+start_time = time.time()
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--debug',
@@ -24,7 +27,7 @@ systems_file_path = os.path.join(data_directory, 'systems.csv')
 bodies_data_path = os.path.join(data_directory, 'bodies.jsonl')
 output_file_path = os.path.join(data_directory, 'us_data.json')
 
-start_time = time.time()
+print('Using {} as data directory'.format(data_directory))
 
 required_bodies = []
 required_systems = []
