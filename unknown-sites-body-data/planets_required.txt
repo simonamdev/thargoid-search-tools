@@ -64,8 +64,8 @@ A 2 C
 B 7 F
 ABCD 1 A
 BC 1 A
-B 3 B
-ABC 2A
+B 3 A
+ABC 2 A
 A 3 A
 10 F
 A 8 C
@@ -73,7 +73,7 @@ A 8 C
 1 B
 4 B
 B 2 A
-B 2 B
+B 2 A
 5 D
 2 B
 8 B
@@ -81,3 +81,103 @@ B 2 B
 6 A
 5 D
 A 2 D
+1 B
+A 2 C
+7 A
+8 A
+A 4 B
+8 H
+2 A
+1 B
+A 5 A
+3 G A
+3 C
+A 6
+A 1 A
+A 1 A
+3 A
+1 B
+4 A
+10 A
+AB 1 A
+ABCD 1 A
+B 2 A
+B 1 A
+1 A
+7 A
+1 D
+4 E
+2 F
+A 3
+A 2 B
+ABC 1 C
+AB 1 A
+A 1 A
+ABC 3 C
+1 A
+6 A
+3 C
+1 A
+2 A
+1 D
+2 A
+11 E
+A 3 A
+1 A
+2 B
+A 1 B
+A 1 A
+1 B
+5 F
+A 4
+5 D
+1 A
+A 10 F
+6 A
+A 8 A
+A 3 A
+11 B
+6 E A
+5 A
+14 A
+AB 1 A
+2 A
+A 1 C
+A 1 A
+A 1 C
+AB 1 B
+A 2 A
+8 A
+B 3
+9 A
+4 A
+A 3 A
+1 A
+C 1
+5 A
+8 B
+AB 3 C
+2 A
+ABC 1 C
+7 B
+7 A
+2 B
+6 B
+2 C A
+2 B
+3 A
+2 E
+A 7 A
+A 4 A
+1 A
+A 4 A
+3 A
+7 A
+1 A
+2 A
+1 B
+B 2 A
+1 C
+B 1
+1 A
+AB 4 A
