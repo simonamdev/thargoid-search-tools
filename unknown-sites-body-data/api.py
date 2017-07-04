@@ -22,10 +22,19 @@ def get_site_data(system_name, body_name):
     global site_data
     if system_name is None and body_name is None:
         return site_data
-    for site in site_data:
-        if system_name.lower() == site['system'].lower() and body_name.lower() == site['body'].lower():
-            return site
-    return None
+    # If there isn't the key present, then there is no data present
+    if system_name.upper() not in site_data.keys():
+        return None
+    data = adapt_site_data(system_data=site_data[system_name], system_name=system_name)
+    return data
+
+
+def adapt_site_data(system_data, system_name):
+    data = system_data['planets'][0]['data']
+    data['body'] = system_data['planets'][0]['body'].upper()
+    data['system'] = system_name.upper()
+    data['full_name'] = system_data['planets'][0]['full_name'].upper()
+    return data
 
 
 def get_available_sites():
