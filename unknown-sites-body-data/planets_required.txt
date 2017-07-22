@@ -181,3 +181,27 @@ B 2 A
 B 1
 1 A
 AB 4 A
+4 A
+B 9 B 
+4 A
+1 A
+2 A
+A 1 C
+5 A
+5 C
+6 B
+2 A
+A 9 A
+A 5 B
+4 A
+1 A
+3 A
+2
+A 1 A
+ABC 1 A
+1 C
+A 4 A
+1 A
+2 A
+4 B
+A 16 B

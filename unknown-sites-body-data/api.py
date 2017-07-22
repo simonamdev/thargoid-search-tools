@@ -51,7 +51,7 @@ def unknown_site_data():
     system_name = request.args.get('system')
     body_name = request.args.get('body')
     print('Params: {} {}'.format(system_name, body_name))
-    return_site_data = get_site_data(system_name=system_name, body_name=body_name)
+    return_site_data = get_site_data(system_name=system_name.upper(), body_name=body_name.upper())
     if return_site_data is None:
         return abort(503)
     return jsonify(
